@@ -1,0 +1,8 @@
+# .gitignore
+__pycache__/
+*.pyc
+*.pyo
+session_data/
+.env
+replit.nix
+.venv/
