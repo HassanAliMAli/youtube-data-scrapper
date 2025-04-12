@@ -1,0 +1,177 @@
+/* Custom styles for the YouTube Scraper application */
+
+/* Card and container styling */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: 600;
+}
+
+/* Form controls */
+.form-control, .form-select {
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: var(--bs-danger);
+    border-color: var(--bs-danger);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-outline-secondary {
+    border-color: var(--bs-secondary);
+    color: var(--bs-secondary);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--bs-secondary);
+    color: var(--bs-light);
+}
+
+/* Progress bar styling */
+.progress {
+    height: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Channel info section */
+.channel-info {
+    padding: 1.5rem;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.channel-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.channel-title {
+    margin-left: 1rem;
+}
+
+.channel-thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.channel-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    flex: 1;
+    min-width: 120px;
+    background-color: rgba(0, 0, 0, 0.03);
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--bs-danger);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--bs-secondary);
+}
+
+/* Video list styles */
+.video-item {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.video-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.video-metadata {
+    font-size: 0.85rem;
+    color: var(--bs-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.video-statistics {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+
+.video-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.video-thumbnail {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 3rem;
+    padding: 1.5rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .channel-stats {
+        flex-direction: column;
+    }
+    
+    .stat-item {
+        width: 100%;
+    }
+    
+    .channel-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .channel-title {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+}

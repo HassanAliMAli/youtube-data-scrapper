@@ -1,0 +1,283 @@
+{% extends 'layout.html' %}
+
+{% block title %}YouTube Channel Scraper Results{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold">Channel Results</h1>
+        <div>
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="fas fa-home me-2"></i>New Search
+            </a>
+            <a href="#" id="exportBtn" class="btn btn-outline-success ms-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+                <i class="fas fa-file-export me-2"></i>Export Data
+            </a>
+        </div>
+    </div>
+    
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <div class="me-3">
+            <i class="fas fa-info-circle fs-3"></i>
+        </div>
+        <div>
+            <h4 class="alert-heading h5 mb-1">Channel Data Successfully Retrieved!</h4>
+            {% if channel.video_count > 1000 %}<p class="mb-0 text-warning"><i class="fas fa-exclamation-triangle me-1"></i> Large channel detected ({{ channel.video_count|format_number }} videos). For performance reasons, results are limited to the most recent 500 videos in the date range.</p>{% endif %}
+            <p class="mb-0">Showing results for the date range: {{ start_date }} to {{ end_date }}</p>
+            {% if videos %}
+                <p class="mb-0">Found {{ videos|length }} videos with a total of {{ summary.total_comments|format_number }} comments.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Channel Overview Card -->
+    <div class="card bg-dark mb-4 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0 d-flex align-items-center">
+                <i class="fab fa-youtube text-danger me-2"></i>
+                Channel Overview
+            </h2>
+            {% if channel.custom_url %}
+                <a href="https://youtube.com/{{ channel.custom_url }}" target="_blank" class="btn btn-sm btn-outline-light">
+                    Visit Channel <i class="fas fa-external-link-alt ms-1"></i>
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center mb-4">
+                <div class="col-md-2 text-center">
+                    <img src="{{ channel.thumbnail_url }}" alt="{{ channel.title }}" class="img-fluid rounded" style="max-width: 120px;">
+                </div>
+                <div class="col-md-10">
+                    <h3 class="card-title h3 mb-2">{{ channel.title }}</h3>
+                    <p class="text-muted small mb-3">
+                        {% if channel.custom_url %}@{{ channel.custom_url }}{% endif %}
+                        {% if channel.country %} • {{ channel.country }}{% endif %}
+                    </p>
+                    <p class="mb-0">{{ channel.description }}</p>
+                </div>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="bg-dark text-white p-3 rounded shadow-sm h-100">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-square rounded bg-primary bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 text-white">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Subscribers</h4>
+                                <p class="mb-0 fs-5">{{ channel.subscriber_count|format_number }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="bg-dark text-white p-3 rounded shadow-sm h-100">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-square rounded bg-danger bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 text-white">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Videos</h4>
+                                <p class="mb-0 fs-5">{{ channel.video_count|format_number }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="bg-dark text-white p-3 rounded shadow-sm h-100">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-square rounded bg-info bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 text-white">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Total Views</h4>
+                                <p class="mb-0 fs-5">{{ channel.view_count|format_number }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="bg-dark text-white p-3 rounded shadow-sm h-100">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-square rounded bg-success bg-gradient d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 text-white">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Published</h4>
+                                <p class="mb-0 small">{{ channel.published_at|format_date }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Videos -->
+    {% if videos %}
+    <div class="card bg-dark mb-4 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0">
+                <i class="fas fa-video me-2"></i>
+                Videos ({{ videos|length }})
+            </h2>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-light active" id="cardViewBtn">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-light" id="tableViewBtn">
+                    <i class="fas fa-table"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Card View -->
+        <div class="card-body" id="cardView">
+            <div class="row g-4">
+                {% for video in videos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 bg-dark border-secondary">
+                        <div class="position-relative">
+                            <img src="{{ video.thumbnail_url }}" class="card-img-top" alt="{{ video.title }}">
+                            <span class="position-absolute bottom-0 end-0 bg-dark text-white px-2 py-1 m-2 rounded-pill fs-small">
+                                {{ video.duration|format_duration }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fs-6">{{ video.title }}</h5>
+                            
+                            <div class="d-flex flex-wrap mb-2">
+                                {% if video.tags %}
+                                    {% for tag in video.tags[:3] %}
+                                        <span class="badge bg-secondary me-1 mb-1">{{ tag }}</span>
+                                    {% endfor %}
+                                    {% if video.tags|length > 3 %}
+                                        <span class="badge bg-secondary me-1 mb-1">+{{ video.tags|length - 3 }} more</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            
+                            <div class="row g-2 text-muted small mb-2">
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-eye me-1"></i>
+                                        <span>{{ video.view_count|format_number }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-thumbs-up me-1"></i>
+                                        <span>{{ video.like_count|format_number }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-comment me-1"></i>
+                                        <span>{{ video.comment_count|format_number }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-chart-line me-1"></i>
+                                        <span>{{ "%.2f"|format(video.get('engagement_rate', 0)|float) }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text small text-muted">
+                                Published: {{ video.published_at|format_date }}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-darker">
+                            <a href="{{ video.video_url }}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                                <i class="fab fa-youtube me-1"></i> Watch Video
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Table View -->
+        <div class="card-body d-none" id="tableView">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Published</th>
+                            <th>Views</th>
+                            <th>Likes</th>
+                            <th>Comments</th>
+                            <th>Engagement</th>
+                            <th>Tags</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for video in videos %}
+                        <tr>
+                            <td class="text-nowrap text-truncate" style="max-width: 200px;">{{ video.title }}</td>
+                            <td class="text-nowrap">{{ video.published_at|format_date }}</td>
+                            <td class="text-nowrap">{{ video.view_count|format_number }}</td>
+                            <td class="text-nowrap">{{ video.like_count|format_number }}</td>
+                            <td class="text-nowrap">{{ video.comment_count|format_number }}</td>
+                            <td class="text-nowrap">{{ "%.2f"|format(video.engagement_rate|float) }}%</td>
+                            <td class="text-nowrap text-truncate" style="max-width: 200px;">
+                                {% if video.tags %}
+                                    {% for tag in video.tags[:3] %}
+                                        <span class="badge bg-secondary me-1">{{ tag }}</span>
+                                    {% endfor %}
+                                    {% if video.tags|length > 3 %}
+                                        <span class="badge bg-secondary">+{{ video.tags|length - 3 }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="text-nowrap">
+                                <a href="{{ video.video_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">Export Data</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('export') }}" method="post" id="exportForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exportFormat" class="form-label">Select Export Format</label>
+                            <select class="form-select" id="exportFormat" name="export_format" required>
+                                <option value="csv">CSV</option>
+                                <option value="json">JSON</option>
+                                <option value="excel">Excel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </div>
+    
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

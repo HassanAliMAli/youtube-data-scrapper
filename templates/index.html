@@ -1,0 +1,133 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-search me-2"></i> YouTube Channel Scraper
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Enter a YouTube channel URL and select a date range to extract comprehensive analytics data.
+                    Data includes channel metrics, video statistics, and engagement metrics.
+                </p>
+                
+                <form id="scrape-form" action="{{ url_for('scrape') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="channel-url" class="form-label">YouTube Channel URL</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-youtube"></i></span>
+                            <input type="url" class="form-control" id="channel-url" name="channel_url" 
+                                   placeholder="https://www.youtube.com/channel/..." required>
+                        </div>
+                        <div class="form-text">
+                            Enter a channel URL, user URL, custom URL, or video URL. Examples:
+                            <ul class="small">
+                                <li>https://www.youtube.com/channel/UCXuqSBlHAE6Xw-yeJA0Tunw</li>
+                                <li>https://www.youtube.com/user/LinusTechTips</li>
+                                <li>https://www.youtube.com/c/mkbhd</li>
+                                <li>https://www.youtube.com/@MKBHD</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start-date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start-date" name="start_date">
+                            <div class="form-text">Default: 30 days ago</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end-date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end-date" name="end_date">
+                            <div class="form-text">Default: Today</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="api-key" class="form-label">YouTube API Key</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            <input type="text" class="form-control" id="api-key" name="api_key" 
+                                   placeholder="Your YouTube Data API v3 key" 
+                                   value="{{ request.form.get('api_key', '') }}" required>
+                        </div>
+                        <div class="form-text">
+                            Get your API key from the <a href="https://console.developers.google.com/" target="_blank">Google Developers Console</a>
+                        </div>
+                    </div>
+                    
+                    <div id="progress-container" class="mb-3 d-none">
+                        <label class="form-label">Scraping Progress</label>
+                        <div class="progress">
+                            <div id="scraping-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" 
+                                 role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small id="progress-status" class="text-muted">Preparing to scrape...</small>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-sync me-2"></i> Scrape Channel Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                <i class="fas fa-info-circle me-2"></i> About This Tool
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">YouTube Channel Analytics Scraper</h5>
+                <p class="card-text">
+                    This tool extracts comprehensive analytics data from YouTube channels within a specified date range.
+                    It provides channel-level metrics, video statistics, engagement data, and more.
+                </p>
+                
+                <h6 class="mt-3">Data Collected:</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-2">
+                            <div class="card-header py-2">Channel Data</div>
+                            <div class="card-body py-2">
+                                <ul class="small mb-0">
+                                    <li>Channel name & description</li>
+                                    <li>Subscriber count</li>
+                                    <li>Total view count</li>
+                                    <li>Channel creation date</li>
+                                    <li>Upload frequency</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-2">
+                            <div class="card-header py-2">Video Data</div>
+                            <div class="card-body py-2">
+                                <ul class="small mb-0">
+                                    <li>Title & description</li>
+                                    <li>Upload date & time</li>
+                                    <li>View, like & comment counts</li>
+                                    <li>Tags & categories</li>
+                                    <li>Engagement metrics</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h6 class="mt-3">Notes:</h6>
+                <ul class="small">
+                    <li>This tool uses the YouTube Data API v3, which has daily quota limits.</li>
+                    <li>Some data points may be limited by API restrictions.</li>
+                    <li>Results can be exported in CSV, JSON, or Excel formats.</li>
+                    <li>All scraping complies with YouTube's Terms of Service.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
