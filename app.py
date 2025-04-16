@@ -235,25 +235,43 @@ def results():
         flash('Session data has expired. Please perform a new scrape.', 'warning')
         return redirect(url_for('index'))
     
-    # Prepare display dates
-    start_date_display = format_date_for_display(session.get('start_date', ''))
-    end_date_display = format_date_for_display(session.get('end_date', ''))
+    # Pagination logic
+    page = request.args.get('page', 1, type=int)
+    videos_per_page = 10
+    all_videos = data.get('videos_data', []) # Get all videos
+    total_videos = len(all_videos)
+    total_pages = (total_videos + videos_per_page - 1) // videos_per_page
     
-    # Prepare summary statistics
-    videos_data = data['videos_data']
+    # Ensure page number is valid
+    if page < 1:
+        page = 1
+    elif page > total_pages and total_pages > 0:
+        page = total_pages
+    
+    start_index = (page - 1) * videos_per_page
+    end_index = start_index + videos_per_page
+    videos_to_display = all_videos[start_index:end_index] # Get slice for current page
+    
+    # Prepare display dates using the existing filter in the template
+    start_date_display = session.get('start_date', '')
+    end_date_display = session.get('end_date', '')
+    
+    # Prepare summary statistics (using all videos)
     summary = {
-        'total_views': sum(video.get('view_count', 0) for video in videos_data),
-        'total_likes': sum(video.get('like_count', 0) for video in videos_data),
-        'total_comments': sum(video.get('comment_count', 0) for video in videos_data),
-        'avg_engagement': sum(video.get('engagement_rate', 0) for video in videos_data) / len(videos_data) if videos_data else 0
+        'total_views': sum(video.get('view_count', 0) for video in all_videos),
+        'total_likes': sum(video.get('like_count', 0) for video in all_videos),
+        'total_comments': sum(video.get('comment_count', 0) for video in all_videos),
+        'avg_engagement': sum(video.get('engagement_rate', 0) for video in all_videos) / total_videos if total_videos else 0
     }
     
     return render_template('results.html', 
                           channel=data['channel_data'], 
-                          videos=data['videos_data'], 
+                          videos=videos_to_display, # Pass only the slice for display
                           summary=summary,
                           start_date=start_date_display,
-                          end_date=end_date_display)
+                          end_date=end_date_display,
+                          current_page=page,
+                          total_pages=total_pages)
 
 @app.route('/progress')
 def progress():
