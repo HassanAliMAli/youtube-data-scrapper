@@ -78,6 +78,10 @@ For manual deployment:
 4. Click "Analyze" to view the results
 5. Export data as needed
 
+## Troubleshooting
+
+- **Errors During Scraping:** If you encounter errors, timeouts, or unexpected behavior when scraping a channel with a large number of videos, try reducing the video processing limit. Edit the `yt_scraper/api.py` file and lower the value of the `MAX_VIDEOS_TO_PROCESS` constant (e.g., from 3000 to 1000 or lower) before trying the scrape again. This can help prevent issues related to API quota limits or server resource constraints.
+
 ## License
 
 This project is licensed under the MIT License.
