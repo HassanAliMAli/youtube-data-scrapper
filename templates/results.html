@@ -127,17 +127,17 @@
                 Videos ({{ videos|length }})
             </h2>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-light active" id="cardViewBtn">
+                <button type="button" class="btn btn-sm btn-outline-light {% if current_view == 'card' %}active{% endif %}" id="cardViewBtn">
                     <i class="fas fa-th-large"></i>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-light" id="tableViewBtn">
+                <button type="button" class="btn btn-sm btn-outline-light {% if current_view == 'table' %}active{% endif %}" id="tableViewBtn">
                     <i class="fas fa-table"></i>
                 </button>
             </div>
         </div>
         
         <!-- Card View -->
-        <div class="card-body" id="cardView">
+        <div class="card-body {% if current_view != 'card' %}d-none{% endif %}" id="cardView">
             <div class="row g-4">
                 {% for video in videos %}
                 <div class="col-md-6 col-lg-4">
@@ -204,7 +204,7 @@
         </div>
         
         <!-- Table View -->
-        <div class="card-body d-none" id="tableView">
+        <div class="card-body {% if current_view != 'table' %}d-none{% endif %}" id="tableView">
             <div class="table-responsive">
                 <table class="table table-dark table-hover table-bordered">
                     <thead>
@@ -260,7 +260,7 @@
             <nav aria-label="Video pagination">
                 <ul class="pagination mb-0">
                     <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
-                        <a class="page-link bg-dark text-white" href="{{ url_for('results', page=current_page-1) }}" aria-label="Previous">
+                        <a class="page-link bg-dark text-white pagination-link" href="{{ url_for('results', page=current_page-1, view=current_view) }}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -269,7 +269,7 @@
                     {% set end_page = [total_pages, current_page + page_window] | min %}
                     
                     {% if start_page > 1 %}
-                        <li class="page-item"><a class="page-link bg-dark text-white" href="{{ url_for('results', page=1) }}">1</a></li>
+                        <li class="page-item"><a class="page-link bg-dark text-white pagination-link" href="{{ url_for('results', page=1, view=current_view) }}">1</a></li>
                         {% if start_page > 2 %}
                             <li class="page-item disabled"><span class="page-link bg-dark text-white">...</span></li>
                         {% endif %}
@@ -277,7 +277,7 @@
 
                     {% for page_num in range(start_page, end_page + 1) %}
                         <li class="page-item {% if page_num == current_page %}active{% endif %}">
-                            <a class="page-link {% if page_num == current_page %}bg-primary border-primary{% else %}bg-dark text-white{% endif %}" href="{{ url_for('results', page=page_num) }}">{{ page_num }}</a>
+                            <a class="page-link pagination-link {% if page_num == current_page %}bg-primary border-primary{% else %}bg-dark text-white{% endif %}" href="{{ url_for('results', page=page_num, view=current_view) }}">{{ page_num }}</a>
                         </li>
                     {% endfor %}
                     
@@ -285,11 +285,11 @@
                         {% if end_page < total_pages - 1 %}
                             <li class="page-item disabled"><span class="page-link bg-dark text-white">...</span></li>
                         {% endif %}
-                        <li class="page-item"><a class="page-link bg-dark text-white" href="{{ url_for('results', page=total_pages) }}">{{ total_pages }}</a></li>
+                        <li class="page-item"><a class="page-link bg-dark text-white pagination-link" href="{{ url_for('results', page=total_pages, view=current_view) }}">{{ total_pages }}</a></li>
                     {% endif %}
                     
                     <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
-                        <a class="page-link bg-dark text-white" href="{{ url_for('results', page=current_page+1) }}" aria-label="Next">
+                        <a class="page-link bg-dark text-white pagination-link" href="{{ url_for('results', page=current_page+1, view=current_view) }}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

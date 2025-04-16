@@ -225,6 +225,7 @@ def results():
     
     # Pagination logic
     page = request.args.get('page', 1, type=int)
+    view = request.args.get('view', 'card') # Get view preference, default to 'card'
     videos_per_page = 12
     all_videos = data.get('videos_data', []) # Get all videos
     total_videos = len(all_videos)
@@ -259,7 +260,8 @@ def results():
                           start_date=start_date_display,
                           end_date=end_date_display,
                           current_page=page,
-                          total_pages=total_pages)
+                          total_pages=total_pages,
+                          current_view=view) # Pass current view to template
 
 @app.route('/progress')
 def progress():

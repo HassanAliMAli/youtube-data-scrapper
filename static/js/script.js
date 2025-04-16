@@ -199,20 +199,32 @@ function setupViewToggle() {
     const tableView = document.getElementById('tableView');
     
     if (cardViewBtn && tableViewBtn && cardView && tableView) {
-        cardViewBtn.addEventListener('click', function() {
+        cardViewBtn.addEventListener('click', () => {
             cardView.classList.remove('d-none');
             tableView.classList.add('d-none');
             cardViewBtn.classList.add('active');
             tableViewBtn.classList.remove('active');
+            updatePaginationLinks('card');
         });
         
-        tableViewBtn.addEventListener('click', function() {
+        tableViewBtn.addEventListener('click', () => {
             cardView.classList.add('d-none');
             tableView.classList.remove('d-none');
             cardViewBtn.classList.remove('active');
             tableViewBtn.classList.add('active');
+            updatePaginationLinks('table');
         });
     }
+}
+
+// New function to update pagination links with the current view
+function updatePaginationLinks(currentView) {
+    const paginationLinks = document.querySelectorAll('.pagination-link');
+    paginationLinks.forEach(link => {
+        const url = new URL(link.href);
+        url.searchParams.set('view', currentView);
+        link.href = url.toString();
+    });
 }
 
 // Add event listener to document ready
