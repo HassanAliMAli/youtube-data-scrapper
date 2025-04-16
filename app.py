@@ -10,7 +10,7 @@ from flask import render_template, request, redirect, url_for, flash, session, j
 
 from main import app
 from yt_scraper.api import YouTubeAPI
-from yt_scraper.utils import validate_youtube_url, extract_channel_id, format_date_for_display
+from yt_scraper.utils import validate_youtube_url, extract_channel_id
 from yt_scraper.exporter import export_data
 
 # Configure logging
@@ -161,10 +161,6 @@ def scrape():
         session['start_date'] = start_date
         session['end_date'] = end_date
         
-        # Prepare display dates
-        start_date_display = format_date_for_display(start_date)
-        end_date_display = format_date_for_display(end_date)
-        
         # Prepare summary statistics
         summary = {
             'total_views': sum(video.get('view_count', 0) for video in videos_data),
@@ -177,8 +173,8 @@ def scrape():
                               channel=channel_data, 
                               videos=videos_data, 
                               summary=summary,
-                              start_date=start_date_display,
-                              end_date=end_date_display)
+                              start_date=start_date,
+                              end_date=end_date)
     
     except Exception as e:
         logger.error(f"Error during scraping: {e}")

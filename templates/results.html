@@ -23,7 +23,7 @@
         <div>
             <h4 class="alert-heading h5 mb-1">Channel Data Successfully Retrieved!</h4>
             {% if channel.video_count > 1000 %}<p class="mb-0 text-warning"><i class="fas fa-exclamation-triangle me-1"></i> Large channel detected ({{ channel.video_count|format_number }} videos). For performance reasons, results are limited to the most recent 500 videos in the date range.</p>{% endif %}
-            <p class="mb-0">Showing results for the date range: {{ start_date }} to {{ end_date }}</p>
+            <p class="mb-0">Showing results for the date range: {{ start_date|format_date }} to {{ end_date|format_date }}</p>
             {% if videos %}
                 <p class="mb-0">Found {{ videos|length }} videos with a total of {{ summary.total_comments|format_number }} comments.</p>
             {% endif %}
