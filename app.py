@@ -225,7 +225,7 @@ def results():
     
     # Pagination logic
     page = request.args.get('page', 1, type=int)
-    videos_per_page = 10
+    videos_per_page = 12
     all_videos = data.get('videos_data', []) # Get all videos
     total_videos = len(all_videos)
     total_pages = (total_videos + videos_per_page - 1) // videos_per_page
