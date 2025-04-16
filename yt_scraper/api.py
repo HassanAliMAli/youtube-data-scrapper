@@ -139,26 +139,11 @@ class YouTubeAPI:
             total_video_count = int(channel_response['items'][0]['statistics'].get('videoCount', 0))
             logger.debug(f"Channel has {total_video_count} total videos")
             
-            # For large channels, we'll limit the number of videos to process
-            MAX_VIDEOS_TO_PROCESS = 500 
-            is_large_channel = total_video_count > 1000
-            
-            if is_large_channel:
-                self.progress = {'status': f'Large channel detected ({total_video_count} videos). Limiting results to most recent {MAX_VIDEOS_TO_PROCESS} videos.', 'progress': 35}
-                logger.warning(f"Large channel detected ({total_video_count} videos). Limiting results.")
-            
             # Get videos from uploads playlist
             videos = []
             next_page_token = None
-            pages_to_fetch = 10  # For large channels, limit to 10 pages (500 videos max)
-            page_count = 0
             
             while True:
-                # For large channels, limit the number of API requests
-                if is_large_channel and page_count >= pages_to_fetch:
-                    logger.info(f"Reached page limit ({pages_to_fetch}) for large channel. Stopping further requests.")
-                    break
-                
                 try:
                     playlist_response = self.youtube.playlistItems().list(
                         part='snippet,contentDetails',
@@ -166,8 +151,6 @@ class YouTubeAPI:
                         maxResults=50,
                         pageToken=next_page_token
                     ).execute()
-                    
-                    page_count += 1
                     
                     # Process each video in the page
                     for item in playlist_response['items']:
@@ -191,14 +174,8 @@ class YouTubeAPI:
                                 'thumbnail_url': item['snippet']['thumbnails'].get('high', {}).get('url', '')
                             })
                     
-                    # Check if there are more pages
                     next_page_token = playlist_response.get('nextPageToken')
                     if not next_page_token:
-                        break
-                    
-                    # For large channels, limit the number of videos to process
-                    if is_large_channel and len(videos) >= MAX_VIDEOS_TO_PROCESS:
-                        logger.info(f"Reached video limit ({MAX_VIDEOS_TO_PROCESS}) for large channel. Stopping further requests.")
                         break
                     
                 except HttpError as e:
@@ -222,11 +199,6 @@ class YouTubeAPI:
                 logger.warning("No videos found in the specified date range.")
                 return []
                 
-            # Apply additional limit for very large results
-            if video_count > MAX_VIDEOS_TO_PROCESS:
-                logger.warning(f"Limiting results to {MAX_VIDEOS_TO_PROCESS} most recent videos.")
-                videos = videos[:MAX_VIDEOS_TO_PROCESS]
-            
             # Get detailed data for each video
             return self._get_video_details(videos)
         
