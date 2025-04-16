@@ -161,20 +161,8 @@ def scrape():
         session['start_date'] = start_date
         session['end_date'] = end_date
         
-        # Prepare summary statistics
-        summary = {
-            'total_views': sum(video.get('view_count', 0) for video in videos_data),
-            'total_likes': sum(video.get('like_count', 0) for video in videos_data),
-            'total_comments': sum(video.get('comment_count', 0) for video in videos_data),
-            'avg_engagement': sum(video.get('engagement_rate', 0) for video in videos_data) / len(videos_data) if videos_data else 0
-        }
-        
-        return render_template('results.html', 
-                              channel=channel_data, 
-                              videos=videos_data, 
-                              summary=summary,
-                              start_date=start_date,
-                              end_date=end_date)
+        # Instead of rendering here, redirect to the results route for page 1
+        return redirect(url_for('results', page=1))
     
     except Exception as e:
         logger.error(f"Error during scraping: {e}")
