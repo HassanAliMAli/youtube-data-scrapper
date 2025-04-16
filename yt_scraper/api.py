@@ -5,6 +5,7 @@ import isodate
 from urllib.parse import urlparse, parse_qs
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from .utils import format_duration
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -284,7 +285,7 @@ class YouTubeAPI:
                                 try:
                                     # Add additional data to the video
                                     batch[idx].update({
-                                        'duration': item['contentDetails'].get('duration', 'PT0S'),
+                                        'duration': format_duration(item['contentDetails'].get('duration', 'PT0S')),
                                         'dimension': item['contentDetails'].get('dimension', 'N/A'),
                                         'definition': item['contentDetails'].get('definition', 'N/A'),
                                         'caption': item['contentDetails'].get('caption', 'N/A') == 'true',

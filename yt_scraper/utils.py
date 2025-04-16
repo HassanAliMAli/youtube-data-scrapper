@@ -1,6 +1,7 @@
 import re
 import logging
-from datetime import datetime
+import isodate
+from datetime import datetime, timedelta
 from urllib.parse import urlparse, parse_qs
 
 # Configure logging
@@ -206,6 +207,25 @@ def _search_for_channel(youtube_api, query):
     except Exception as e:
         logger.error(f"Error searching for channel: {e}")
         return None
+
+def format_duration(duration_str):
+    """Convert ISO 8601 duration string (e.g., PT1M30S) to HH:MM:SS or MM:SS format."""
+    if not duration_str:
+        return "00:00"
+    try:
+        duration = isodate.parse_duration(duration_str)
+        total_seconds = int(duration.total_seconds())
+        
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        
+        if hours > 0:
+            return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        else:
+            return f"{minutes:02d}:{seconds:02d}"
+    except Exception as e:
+        logger.error(f"Error formatting duration '{duration_str}': {e}")
+        return "00:00" # Return default on error
 
 def format_date_for_display(date_str):
     """Format a date string for display."""
