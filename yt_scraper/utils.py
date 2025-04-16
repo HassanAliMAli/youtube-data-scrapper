@@ -227,6 +227,21 @@ def format_duration(duration_str):
         logger.error(f"Error formatting duration '{duration_str}': {e}")
         return "00:00" # Return default on error
 
+def format_datetime_for_display(iso_datetime_str):
+    """Format an ISO 8601 datetime string to a more readable format."""
+    if not iso_datetime_str:
+        return "N/A"
+    try:
+        # Handle timezone 'Z' by replacing it with +00:00 for fromisoformat
+        if iso_datetime_str.endswith('Z'):
+            iso_datetime_str = iso_datetime_str[:-1] + '+00:00'
+        dt_obj = datetime.fromisoformat(iso_datetime_str)
+        # Format example: April 16, 2025, 02:00 AM
+        return dt_obj.strftime('%B %d, %Y, %I:%M %p')
+    except Exception as e:
+        logger.error(f"Error formatting datetime '{iso_datetime_str}': {e}")
+        return iso_datetime_str # Return original string on error
+
 def format_date_for_display(date_str):
     """Format a date string for display."""
     try:

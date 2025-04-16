@@ -5,7 +5,7 @@ import isodate
 from urllib.parse import urlparse, parse_qs
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from .utils import format_duration
+from .utils import format_duration, format_datetime_for_display
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -53,7 +53,7 @@ class YouTubeAPI:
                 'description': channel['snippet']['description'],
                 'custom_url': custom_url,
                 'url': channel_url,
-                'published_at': channel['snippet']['publishedAt'],
+                'published_at': format_datetime_for_display(channel['snippet']['publishedAt']),
                 'country': channel['snippet'].get('country', 'Unknown'),
                 'view_count': int(channel['statistics'].get('viewCount', 0)),
                 'subscriber_count': int(channel['statistics'].get('subscriberCount', 0)),
@@ -181,7 +181,7 @@ class YouTubeAPI:
                                 'id': video_id,
                                 'title': item['snippet']['title'],
                                 'description': item['snippet']['description'],
-                                'published_at': published_at,
+                                'published_at': format_datetime_for_display(published_at),
                                 'thumbnail_url': item['snippet']['thumbnails'].get('high', {}).get('url', '')
                             })
                     
@@ -416,8 +416,8 @@ class YouTubeAPI:
                         'author': comment['authorDisplayName'],
                         'text': comment['textDisplay'],
                         'like_count': comment['likeCount'],
-                        'published_at': comment['publishedAt'],
-                        'updated_at': comment['updatedAt']
+                        'published_at': format_datetime_for_display(comment['publishedAt']),
+                        'updated_at': format_datetime_for_display(comment['updatedAt'])
                     })
                 
                 next_page_token = comment_response.get('nextPageToken')
