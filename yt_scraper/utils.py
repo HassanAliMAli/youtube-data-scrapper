@@ -227,25 +227,28 @@ def format_duration(duration_str):
         logger.error(f"Error formatting duration '{duration_str}': {e}")
         return "00:00" # Return default on error
 
-def format_datetime_for_display(iso_datetime_str):
-    """Format an ISO 8601 datetime string to a more readable format."""
+def format_iso_date(iso_datetime_str):
+    """Format an ISO 8601 datetime string to just the date (e.g., April 16, 2025)."""
     if not iso_datetime_str:
         return "N/A"
     try:
-        # Handle timezone 'Z' by replacing it with +00:00 for fromisoformat
         if iso_datetime_str.endswith('Z'):
             iso_datetime_str = iso_datetime_str[:-1] + '+00:00'
         dt_obj = datetime.fromisoformat(iso_datetime_str)
-        # Format example: April 16, 2025, 02:00 AM
-        return dt_obj.strftime('%B %d, %Y, %I:%M %p')
+        return dt_obj.strftime('%B %d, %Y') # Format: April 16, 2025
     except Exception as e:
-        logger.error(f"Error formatting datetime '{iso_datetime_str}': {e}")
-        return iso_datetime_str # Return original string on error
+        logger.error(f"Error formatting ISO date '{iso_datetime_str}': {e}")
+        return "Invalid Date"
 
-def format_date_for_display(date_str):
-    """Format a date string for display."""
+def format_iso_time(iso_datetime_str):
+    """Format an ISO 8601 datetime string to just the time (e.g., 02:00 AM)."""
+    if not iso_datetime_str:
+        return "N/A"
     try:
-        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-        return date_obj.strftime('%B %d, %Y')
-    except ValueError:
-        return date_str
+        if iso_datetime_str.endswith('Z'):
+            iso_datetime_str = iso_datetime_str[:-1] + '+00:00'
+        dt_obj = datetime.fromisoformat(iso_datetime_str)
+        return dt_obj.strftime('%I:%M %p') # Format: 02:00 AM
+    except Exception as e:
+        logger.error(f"Error formatting ISO time '{iso_datetime_str}': {e}")
+        return "Invalid Time"

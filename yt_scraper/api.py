@@ -5,7 +5,7 @@ import isodate
 from urllib.parse import urlparse, parse_qs
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from .utils import format_duration, format_datetime_for_display
+from .utils import format_duration, format_iso_date, format_iso_time
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -47,13 +47,16 @@ class YouTubeAPI:
             if custom_url:
                 channel_url = f"https://www.youtube.com/{custom_url}"
             
+            channel_published_at = channel['snippet']['publishedAt']
             channel_data = {
                 'id': channel['id'],
                 'title': channel['snippet']['title'],
                 'description': channel['snippet']['description'],
                 'custom_url': custom_url,
                 'url': channel_url,
-                'published_at': format_datetime_for_display(channel['snippet']['publishedAt']),
+                'published_at': channel_published_at,
+                'published_date': format_iso_date(channel_published_at),
+                'published_time': format_iso_time(channel_published_at),
                 'country': channel['snippet'].get('country', 'Unknown'),
                 'view_count': int(channel['statistics'].get('viewCount', 0)),
                 'subscriber_count': int(channel['statistics'].get('subscriberCount', 0)),
@@ -177,11 +180,14 @@ class YouTubeAPI:
                         # Check if video is within date range
                         if start_date_iso <= published_at <= end_date_iso:
                             video_id = item['contentDetails']['videoId']
+                            video_published_at = published_at
                             videos.append({
                                 'id': video_id,
                                 'title': item['snippet']['title'],
                                 'description': item['snippet']['description'],
-                                'published_at': format_datetime_for_display(published_at),
+                                'published_at': video_published_at,
+                                'published_date': format_iso_date(video_published_at),
+                                'published_time': format_iso_time(video_published_at),
                                 'thumbnail_url': item['snippet']['thumbnails'].get('high', {}).get('url', '')
                             })
                     
@@ -412,12 +418,18 @@ class YouTubeAPI:
                 
                 for item in comment_response['items']:
                     comment = item['snippet']['topLevelComment']['snippet']
+                    comment_published_at = comment['publishedAt']
+                    comment_updated_at = comment['updatedAt']
                     comments.append({
                         'author': comment['authorDisplayName'],
                         'text': comment['textDisplay'],
                         'like_count': comment['likeCount'],
-                        'published_at': format_datetime_for_display(comment['publishedAt']),
-                        'updated_at': format_datetime_for_display(comment['updatedAt'])
+                        'published_at': comment_published_at,
+                        'published_date': format_iso_date(comment_published_at),
+                        'published_time': format_iso_time(comment_published_at),
+                        'updated_at': comment_updated_at,
+                        'updated_date': format_iso_date(comment_updated_at),
+                        'updated_time': format_iso_time(comment_updated_at)
                     })
                 
                 next_page_token = comment_response.get('nextPageToken')

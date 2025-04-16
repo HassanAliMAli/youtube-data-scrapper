@@ -109,7 +109,7 @@
                             </div>
                             <div>
                                 <h4 class="h6 fw-bold mb-0">Published</h4>
-                                <p class="mb-0 small">{{ channel.published_at|format_date }}</p>
+                                <p class="mb-0 small">{{ channel.published_date }}</p>
                             </div>
                         </div>
                     </div>
@@ -189,7 +189,7 @@
                                 </div>
                             </div>
                             <p class="card-text small text-muted">
-                                Published: {{ video.published_at|format_date }}
+                                Published: {{ video.published_date }} at {{ video.published_time }}
                             </p>
                         </div>
                         <div class="card-footer bg-darker">
@@ -210,11 +210,13 @@
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Published</th>
+                            <th>Published Date</th>
+                            <th>Published Time</th>
                             <th>Views</th>
                             <th>Likes</th>
                             <th>Comments</th>
-                            <th>Engagement</th>
+                            <th>Engagement Rate</th>
+                            <th>Duration</th>
                             <th>Tags</th>
                             <th>Actions</th>
                         </tr>
@@ -223,11 +225,13 @@
                         {% for video in videos %}
                         <tr>
                             <td class="text-nowrap text-truncate" style="max-width: 200px;">{{ video.title }}</td>
-                            <td class="text-nowrap">{{ video.published_at|format_date }}</td>
+                            <td class="text-nowrap">{{ video.published_date }}</td>
+                            <td class="text-nowrap">{{ video.published_time }}</td>
                             <td class="text-nowrap">{{ video.view_count|format_number }}</td>
                             <td class="text-nowrap">{{ video.like_count|format_number }}</td>
                             <td class="text-nowrap">{{ video.comment_count|format_number }}</td>
-                            <td class="text-nowrap">{{ "%.2f"|format(video.engagement_rate|float) }}%</td>
+                            <td class="text-nowrap">{{ "%.2f"|format(video.get('engagement_rate', 0)|float) }}%</td>
+                            <td class="text-nowrap">{{ video.duration }}</td>
                             <td class="text-nowrap text-truncate" style="max-width: 200px;">
                                 {% if video.tags %}
                                     {% for tag in video.tags[:3] %}

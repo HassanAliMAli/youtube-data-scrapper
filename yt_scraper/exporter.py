@@ -92,21 +92,29 @@ def export_to_csv(channel_data, videos_data, timestamp):
             
             # Write comments section if available
             writer.writerow(['COMMENTS DATA'])
-            writer.writerow(['video_id', 'video_title', 'author', 'text', 'like_count', 'published_at', 'updated_at'])
+            # Update header row for comments
+            writer.writerow(['video_id', 'video_title', 'author', 'text', 'like_count', 
+                             'published_at', 'published_date', 'published_time', 
+                             'updated_at', 'updated_date', 'updated_time'])
             
             for video in videos_data:
                 video_id = video.get('id', '')
                 video_title = video.get('title', '')
                 
                 for comment in video.get('comments', []):
+                    # Extract data including new fields
                     writer.writerow([
                         video_id,
                         video_title,
                         comment.get('author', ''),
                         comment.get('text', '').replace('\n', ' '),
                         comment.get('like_count', 0),
-                        comment.get('published_at', ''),
-                        comment.get('updated_at', '')
+                        comment.get('published_at', ''), # Original ISO
+                        comment.get('published_date', ''), # Formatted Date
+                        comment.get('published_time', ''), # Formatted Time
+                        comment.get('updated_at', ''), # Original ISO
+                        comment.get('updated_date', ''), # Formatted Date
+                        comment.get('updated_time', '') # Formatted Time
                     ])
         
         logger.debug(f"CSV export completed to file: {temp_file.name}")
@@ -224,14 +232,21 @@ def export_to_excel(channel_data, videos_data, timestamp):
                         'author': comment.get('author', ''),
                         'text': comment.get('text', '').replace('\n', ' '), # Replace newlines
                         'like_count': comment.get('like_count', 0),
-                        'published_at': comment.get('published_at', ''),
-                        'updated_at': comment.get('updated_at', '')
+                        'published_at': comment.get('published_at', ''), # Original ISO
+                        'published_date': comment.get('published_date', ''), # Formatted Date
+                        'published_time': comment.get('published_time', ''), # Formatted Time
+                        'updated_at': comment.get('updated_at', ''), # Original ISO
+                        'updated_date': comment.get('updated_date', ''), # Formatted Date
+                        'updated_time': comment.get('updated_time', '') # Formatted Time
                     })
             
             # Create comments DataFrame and export to sheet if comments exist
             if comments_data:
                 comments_df = pd.DataFrame(comments_data)
-                comments_df = comments_df[['video_id', 'video_title', 'author', 'text', 'like_count', 'published_at', 'updated_at']] # Ensure column order
+                # Update column order for comments sheet
+                comments_df = comments_df[['video_id', 'video_title', 'author', 'text', 'like_count', 
+                                         'published_at', 'published_date', 'published_time', 
+                                         'updated_at', 'updated_date', 'updated_time']] 
                 comments_df.to_excel(writer, sheet_name='Comments Data', index=False)
             
             # Add a summary sheet
