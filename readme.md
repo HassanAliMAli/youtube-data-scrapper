@@ -1,356 +1,89 @@
-# Project Name
+# YouTube Channel Analytics Scrapper
 
-## Overview
-A brief description of what this project does and who it's for. Include the main features and benefits of your project.
+A web application that allows users to extract and analyze YouTube channel statistics and video data within a specified date range.
 
-## Table of Contents
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Deployment](#deployment)
-  - [Heroku (Free Tier)](#heroku-free-tier)
-  - [Netlify](#netlify)
-  - [Vercel](#vercel)
-  - [GitHub Pages](#github-pages)
-  - [Railway](#railway)
-  - [Render](#render)
-- [Development](#development)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
+## Features
 
-## Prerequisites
-List all the requirements needed before installing the project:
+- Fetch YouTube channel metadata using the YouTube API
+- Retrieve videos published within a specified date range
+- Display comprehensive statistics for the channel and its videos
+- Calculate engagement metrics
+- Export data to CSV or Excel format
+- Clean and modern user interface
 
-- Node.js (v14.x or later)
-- npm (v6.x or later) or Yarn (v1.22.x or later)
-- Git
-- Any database requirements (MongoDB, PostgreSQL, etc.)
-- Other dependencies
+## Technologies Used
 
-## Installation
+- **Backend**: Flask (Python)
+- **Frontend**: HTML, CSS, JavaScript
+- **Data Processing**: Pandas
+- **API Integration**: Google API Python Client
+- **Deployment**: Heroku
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/your-project.git
-   cd your-project
+## Getting Started
+
+### Prerequisites
+
+- Python 3.7+
+- Google API Key with YouTube Data API v3 enabled
+
+### Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/HassanAliMAli/youtube-data-scrapper.git
+   cd youtube-data-scrapper
    ```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
+2. Install dependencies:
+   ```
+   pip install -r requirements.txt
    ```
 
-3. **Set up environment variables**
-   Create a `.env` file in the root directory and add the following variables:
+3. Run the application:
    ```
-   NODE_ENV=development
-   PORT=3000
-   DATABASE_URL=your_database_connection_string
-   SECRET_KEY=your_secret_key
+   python main.py
    ```
 
-4. **Initialize the database**
-   ```bash
-   npm run init-db
-   # or
-   yarn init-db
-   ```
+4. Access the application at `http://localhost:5000`
 
-5. **Build the project (if applicable)**
-   ```bash
-   npm run build
-   # or
-   yarn build
-   ```
+### Configuration
 
-## Configuration
-Explain any configuration options and how to set them up:
+You'll need to obtain a Google API key with YouTube Data API v3 enabled:
 
-- Configuration files location
-- Available options and their default values
-- How to override defaults
-- Examples of common configurations
-
-## Usage
-
-### Starting the application
-
-```bash
-# Development mode
-npm run dev
-# or
-yarn dev
-
-# Production mode
-npm start
-# or
-yarn start
-```
-
-The application will be available at `http://localhost:3000` by default.
-
-### Basic Examples
-
-Include some basic examples of how to use your project:
-
-```javascript
-// Example code
-const projectModule = require('your-project');
-const result = projectModule.doSomething();
-console.log(result);
-```
-
-## API Documentation
-
-If your project includes an API, document the endpoints here:
-
-### Endpoint: `/api/resource`
-
-**Method:** `GET`
-
-**Description:** Retrieves a list of resources.
-
-**Query Parameters:**
-- `limit` (optional): Number of items to return (default: 20)
-- `page` (optional): Page number for pagination (default: 1)
-
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "resource-id",
-      "name": "Resource Name",
-      "description": "Resource Description"
-    }
-  ],
-  "meta": {
-    "total": 100,
-    "page": 1,
-    "limit": 20
-  }
-}
-```
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Navigate to API & Services > Library
+4. Search for "YouTube Data API v3" and enable it
+5. Go to API & Services > Credentials
+6. Create an API key
+7. Use this API key in the application when prompted
 
 ## Deployment
 
-Here are detailed instructions for deploying your project for free on various platforms:
+This application is deployed on Heroku at https://youtube-scrapper-e28371549797.herokuapp.com/
 
-### Heroku (Free Tier)
+For manual deployment:
 
-1. **Create a Heroku account and install the Heroku CLI**
-   ```bash
-   npm install -g heroku
-   heroku login
-   ```
+1. Create a Heroku account and install the Heroku CLI
+2. Log in to Heroku: `heroku login`
+3. Create a new Heroku app: `heroku create`
+4. Push to Heroku: `git push heroku main`
+5. Ensure the web dyno is running: `heroku ps:scale web=1`
 
-2. **Create a Procfile in your project root**
-   ```
-   web: npm start
-   ```
+## Usage
 
-3. **Initialize a Git repository (if not already done)**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   ```
-
-4. **Create a Heroku app and deploy**
-   ```bash
-   heroku create your-app-name
-   git push heroku main
-   ```
-
-5. **Configure environment variables**
-   ```bash
-   heroku config:set NODE_ENV=production
-   heroku config:set DATABASE_URL=your_database_url
-   heroku config:set SECRET_KEY=your_secret_key
-   ```
-
-6. **Scale the app**
-   ```bash
-   heroku ps:scale web=1
-   ```
-
-7. **Open the app**
-   ```bash
-   heroku open
-   ```
-
-### Netlify
-
-1. **Create a netlify.toml file in your project root**
-   ```toml
-   [build]
-     command = "npm run build"
-     publish = "build" # or your build output directory
-   
-   [[redirects]]
-     from = "/*"
-     to = "/index.html"
-     status = 200
-   ```
-
-2. **Deploy via Netlify CLI**
-   ```bash
-   npm install -g netlify-cli
-   netlify login
-   netlify deploy
-   ```
-
-3. **Or connect your GitHub repository to Netlify**
-   - Log in to Netlify
-   - Click "New site from Git"
-   - Choose GitHub and select your repository
-   - Configure build settings
-   - Deploy
-
-### Vercel
-
-1. **Install Vercel CLI**
-   ```bash
-   npm install -g vercel
-   ```
-
-2. **Deploy your project**
-   ```bash
-   vercel login
-   vercel
-   ```
-
-3. **Or connect your GitHub repository to Vercel**
-   - Log in to Vercel
-   - Click "Import Project"
-   - Choose GitHub and select your repository
-   - Configure build settings
-   - Deploy
-
-### GitHub Pages
-
-1. **Add a homepage field to your package.json**
-   ```json
-   {
-     "homepage": "https://yourusername.github.io/your-project"
-   }
-   ```
-
-2. **Install gh-pages package**
-   ```bash
-   npm install --save-dev gh-pages
-   ```
-
-3. **Add deploy scripts to package.json**
-   ```json
-   {
-     "scripts": {
-       "predeploy": "npm run build",
-       "deploy": "gh-pages -d build"
-     }
-   }
-   ```
-
-4. **Deploy to GitHub Pages**
-   ```bash
-   npm run deploy
-   ```
-
-### Railway
-
-1. **Install Railway CLI**
-   ```bash
-   npm i -g @railway/cli
-   ```
-
-2. **Login and initialize project**
-   ```bash
-   railway login
-   railway init
-   ```
-
-3. **Deploy your project**
-   ```bash
-   railway up
-   ```
-
-4. **Set environment variables**
-   ```bash
-   railway variables set KEY=VALUE
-   ```
-
-### Render
-
-1. **Create a render.yaml file in your project root**
-   ```yaml
-   services:
-     - type: web
-       name: your-project-name
-       env: node
-       buildCommand: npm install && npm run build
-       startCommand: npm start
-       envVars:
-         - key: NODE_ENV
-           value: production
-   ```
-
-2. **Connect your GitHub repository to Render**
-   - Create an account on Render
-   - Connect your GitHub account
-   - Create a new Web Service
-   - Select your repository
-   - Render will automatically detect your configuration
-
-## Development
-
-Explain how to set up the development environment:
-
-```bash
-# Run development server
-npm run dev
-
-# Watch for file changes
-npm run watch
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
-```
-
-## Testing
-
-Instructions for running tests:
-
-```bash
-# Run all tests
-npm test
-
-# Run specific test suite
-npm test -- --testPathPattern=user.test.js
-
-# Get test coverage
-npm run test:coverage
-```
-
-## Contributing
-
-Guidelines for contributing to the project:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -am 'Add new feature'`
-4. Push to branch: `git push origin feature-name`
-5. Submit a pull request
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+1. Enter a YouTube channel URL (or video URL from the channel)
+2. Provide your Google API key
+3. Select a date range (optional)
+4. Click "Analyze" to view the results
+5. Export data as needed
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
+This project is licensed under the MIT License.
+
+## Acknowledgements
+
+- YouTube Data API v3
+- Flask framework
+- Open-source libraries used in this project
