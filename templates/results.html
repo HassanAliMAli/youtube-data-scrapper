@@ -252,51 +252,51 @@
                     </tbody>
                 </table>
             </div>
-            
-            <!-- Pagination -->
-            {% if total_pages > 1 %}
-            <div class="card-footer bg-darker d-flex justify-content-center">
-                <nav aria-label="Video pagination">
-                    <ul class="pagination mb-0">
-                        <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
-                            <a class="page-link bg-dark text-white" href="{{ url_for('results', page=current_page-1) }}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        {% set page_window = 2 %}
-                        {% set start_page = [1, current_page - page_window] | max %}
-                        {% set end_page = [total_pages, current_page + page_window] | min %}
-                        
-                        {% if start_page > 1 %}
-                            <li class="page-item"><a class="page-link bg-dark text-white" href="{{ url_for('results', page=1) }}">1</a></li>
-                            {% if start_page > 2 %}
-                                <li class="page-item disabled"><span class="page-link bg-dark text-white">...</span></li>
-                            {% endif %}
-                        {% endif %}
-
-                        {% for page_num in range(start_page, end_page + 1) %}
-                            <li class="page-item {% if page_num == current_page %}active{% endif %}">
-                                <a class="page-link {% if page_num == current_page %}bg-primary border-primary{% else %}bg-dark text-white{% endif %}" href="{{ url_for('results', page=page_num) }}">{{ page_num }}</a>
-                            </li>
-                        {% endfor %}
-                        
-                        {% if end_page < total_pages %}
-                            {% if end_page < total_pages - 1 %}
-                                <li class="page-item disabled"><span class="page-link bg-dark text-white">...</span></li>
-                            {% endif %}
-                            <li class="page-item"><a class="page-link bg-dark text-white" href="{{ url_for('results', page=total_pages) }}">{{ total_pages }}</a></li>
-                        {% endif %}
-                        
-                        <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
-                            <a class="page-link bg-dark text-white" href="{{ url_for('results', page=current_page+1) }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
         </div>
+             
+        <!-- Pagination - moved outside view containers -->
+        {% if total_pages > 1 %}
+        <div class="card-footer bg-darker d-flex justify-content-center">
+            <nav aria-label="Video pagination">
+                <ul class="pagination mb-0">
+                    <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+                        <a class="page-link bg-dark text-white" href="{{ url_for('results', page=current_page-1) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% set page_window = 2 %}
+                    {% set start_page = [1, current_page - page_window] | max %}
+                    {% set end_page = [total_pages, current_page + page_window] | min %}
+                    
+                    {% if start_page > 1 %}
+                        <li class="page-item"><a class="page-link bg-dark text-white" href="{{ url_for('results', page=1) }}">1</a></li>
+                        {% if start_page > 2 %}
+                            <li class="page-item disabled"><span class="page-link bg-dark text-white">...</span></li>
+                        {% endif %}
+                    {% endif %}
+
+                    {% for page_num in range(start_page, end_page + 1) %}
+                        <li class="page-item {% if page_num == current_page %}active{% endif %}">
+                            <a class="page-link {% if page_num == current_page %}bg-primary border-primary{% else %}bg-dark text-white{% endif %}" href="{{ url_for('results', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if end_page < total_pages %}
+                        {% if end_page < total_pages - 1 %}
+                            <li class="page-item disabled"><span class="page-link bg-dark text-white">...</span></li>
+                        {% endif %}
+                        <li class="page-item"><a class="page-link bg-dark text-white" href="{{ url_for('results', page=total_pages) }}">{{ total_pages }}</a></li>
+                    {% endif %}
+                    
+                    <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+                        <a class="page-link bg-dark text-white" href="{{ url_for('results', page=current_page+1) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
 
