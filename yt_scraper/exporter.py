@@ -202,6 +202,14 @@ def export_to_excel(channel_data, videos_data, timestamp):
             # Create videos DataFrame and export to sheet
             if videos_df_data:
                 videos_df = pd.DataFrame(videos_df_data)
+                # Reorder columns for consistency if needed (optional)
+                # Example: Ensure 'id', 'title' are first if they exist
+                cols = videos_df.columns.tolist()
+                if 'id' in cols:
+                    cols.insert(0, cols.pop(cols.index('id')))
+                if 'title' in cols:
+                    cols.insert(1, cols.pop(cols.index('title')))
+                videos_df = videos_df[cols]
                 videos_df.to_excel(writer, sheet_name='Videos Data', index=False)
             
             # Prepare comments data for DataFrame
@@ -209,21 +217,21 @@ def export_to_excel(channel_data, videos_data, timestamp):
             for video in videos_data:
                 video_id = video.get('id', '')
                 video_title = video.get('title', '')
-                
                 for comment in video.get('comments', []):
                     comments_data.append({
                         'video_id': video_id,
                         'video_title': video_title,
                         'author': comment.get('author', ''),
-                        'text': comment.get('text', '').replace('\n', ' '),
+                        'text': comment.get('text', '').replace('\n', ' '), # Replace newlines
                         'like_count': comment.get('like_count', 0),
                         'published_at': comment.get('published_at', ''),
                         'updated_at': comment.get('updated_at', '')
                     })
             
-            # Create comments DataFrame and export to sheet
+            # Create comments DataFrame and export to sheet if comments exist
             if comments_data:
                 comments_df = pd.DataFrame(comments_data)
+                comments_df = comments_df[['video_id', 'video_title', 'author', 'text', 'like_count', 'published_at', 'updated_at']] # Ensure column order
                 comments_df.to_excel(writer, sheet_name='Comments Data', index=False)
             
             # Add a summary sheet
