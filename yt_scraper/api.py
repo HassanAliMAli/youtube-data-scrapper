@@ -139,6 +139,9 @@ class YouTubeAPI:
             total_video_count = int(channel_response['items'][0]['statistics'].get('videoCount', 0))
             logger.debug(f"Channel has {total_video_count} total videos")
             
+            # Limit the number of videos to process
+            MAX_VIDEOS_TO_PROCESS = 3000
+            
             # Get videos from uploads playlist
             videos = []
             next_page_token = None
@@ -174,6 +177,11 @@ class YouTubeAPI:
                                 'thumbnail_url': item['snippet']['thumbnails'].get('high', {}).get('url', '')
                             })
                     
+                    # Limit the number of videos collected
+                    if len(videos) >= MAX_VIDEOS_TO_PROCESS:
+                        logger.warning(f"Reached video limit ({MAX_VIDEOS_TO_PROCESS}). Stopping further collection.")
+                        break
+
                     next_page_token = playlist_response.get('nextPageToken')
                     if not next_page_token:
                         break
@@ -191,6 +199,11 @@ class YouTubeAPI:
                     # Continue with the videos we've collected so far
                     break
             
+            # Ensure the limit is strictly enforced (in case batch fetching goes slightly over)
+            if len(videos) > MAX_VIDEOS_TO_PROCESS:
+                logger.info(f"Trimming video list from {len(videos)} to {MAX_VIDEOS_TO_PROCESS}")
+                videos = videos[:MAX_VIDEOS_TO_PROCESS]
+
             # Update progress
             video_count = len(videos)
             self.progress = {'status': f'Found {video_count} videos in date range', 'progress': 50}
